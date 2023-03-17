@@ -6,6 +6,14 @@
             <div class="card mt-5">
                 <div class="card-body">
                     <h2 class="text-center">Create new account</h2>
+
+                    <?php $session = session() ?>
+                    <?php if (!is_null($session->getFlashdata("success_message"))) : ?>
+                        <div class="alert alert-primary text-center">
+                            <?= $session->getFlashdata("success_message") ?>
+                        </div>
+                    <?php endif ?>
+
                     <?php $validation = \Config\Services::validation(); ?>
                     <form action="<?= base_url('register') ?>" method="post">
                         <div class="mb-2">

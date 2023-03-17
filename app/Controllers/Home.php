@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Models\UserModel;
+
 class Home extends BaseController
 {
     public function index()
@@ -23,6 +25,21 @@ class Home extends BaseController
                 $username = $this->request->getVar("username");
                 $email = $this->request->getVar("email");
                 $password = $this->request->getVar("password");
+
+                $data = [
+                    "username" => $username,
+                    "email" => $email,
+                    "password" => $password
+                ];
+
+                $model = new UserModel();
+                $model->insert($data);
+
+                $session = session();
+                $session->set("success_message", "User registered successfully");
+                $session->markAsFlashdata("success_message");
+
+                return view('register');
             } else {
                 return redirect()->back()->withInput();
             }
