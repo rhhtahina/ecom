@@ -30,9 +30,21 @@
                 </li>
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="<?= base_url('register') ?>"><i class="bi bi-person-plus"></i> Register</a>
-                </li>
+                <?php
+                $session = session();
+                ?>
+                <?php if ($session->loginned == "loginned") : ?>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="<?= base_url($session->user_type == "admin" ? "admin_dashboard" : "user_dashboard") ?>"><?= ucfirst($session->username) ?></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="<?= base_url('logout') ?>">Logout</a>
+                    </li>
+                <?php else : ?>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="<?= base_url('login') ?>"><i class="bi bi-person-plus"></i> Login</a>
+                    </li>
+                <?php endif; ?>
             </ul>
 
         </div>

@@ -48,6 +48,60 @@ class Home extends BaseController
 
     public function login()
     {
-        return view('login');
+        if ($this->request->getMethod() == "get") {
+            return view('login');
+        } else if ($this->request->getMethod() == "post") {
+            // validate
+            if ($this->validate([
+                'email' => 'required|valid_email',
+                'password' => 'required',
+            ])) {
+                $model = new UserModel();
+                $record = $model->where("email", $this->request->getVar("email"))
+                    ->where("password", $this->request->getVar("password"))
+                    ->first();
+
+                $session = session();
+
+                if (!is_null($record)) {
+                    // data found at database
+                    $sess_data = [
+                        "username" => $record["username"],
+                        "email" => $record["email"],
+                        "user_type" => $record["user_type"],
+                        "loginned" => "loginned"
+                    ];
+
+                    $session->set($sess_data);
+
+                    if ($record['user_type'] == "user") {
+                        // go to user page
+                        $url = "user_dashboard";
+                    } else if ($record['user_type'] == "admin") {
+                        // go to admin page
+                        $url = "admin_dashboard";
+                    }
+
+                    return redirect()->to(base_url($url));
+                } else {
+
+                    $session->set("failed_message", "Record does not matched, try again.");
+                    $session->markAsFlashdata("failed_message");
+
+                    return redirect()->back()->withInput();
+                }
+            } else {
+                return redirect()->back()->withInput();
+            }
+        }
+    }
+
+    public function logout()
+    {
+        $session = session();
+        session_unset();
+        session_destroy();
+
+        return redirect()->to(base_url());
     }
 }
