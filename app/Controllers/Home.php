@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\UserDetailsModel;
 use App\Models\UserModel;
 
 class Home extends BaseController
@@ -66,6 +67,7 @@ class Home extends BaseController
                 if (!is_null($record)) {
                     // data found at database
                     $sess_data = [
+                        "user_id" => $record["id"],
                         "username" => $record["username"],
                         "email" => $record["email"],
                         "user_type" => $record["user_type"],
@@ -103,5 +105,53 @@ class Home extends BaseController
         session_destroy();
 
         return redirect()->to(base_url());
+    }
+
+    public function profile()
+    {
+        if ($this->request->getMethod() == "get") {
+            return view('profile');
+        } elseif ($this->request->getMethod() == "post") {
+            $id = $this->request->getVar("id");
+            $country = $this->request->getVar("country");
+            $state = $this->request->getVar("state");
+            $district = $this->request->getVar("district");
+            $pincode = $this->request->getVar("pincode");
+            $mobile = $this->request->getVar("mobile");
+            $local_address = $this->request->getVar("local_address");
+            $permanent_address = $this->request->getVar("permanent_address");
+
+            $model = new UserDetailsModel();
+
+            $session = session();
+            $user_id = $session->user_id;
+
+            $record = $model->where("user_id", $user_id)->first();
+
+            $data = [
+                'user_id' => $user_id,
+                'country' => $country,
+                'state' => $state,
+                'district' => $district,
+                'pincode' => $pincode,
+                'mobile' => $mobile,
+                'local_address' => $local_address,
+                'permanent_address' => $permanent_address,
+            ];
+
+            // print_r($data);
+
+            // die();
+
+            if (!is_null($record)) {
+                // update
+                $model->update($id, $data);
+            } else {
+                // insert
+                $model->insert($data);
+            }
+
+            return redirect()->to(base_url("profile"));
+        }
     }
 }
