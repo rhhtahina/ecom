@@ -48,8 +48,9 @@ $routes->get('/logout', 'Home::logout');
 $routes->get('/profile', 'Home::profile');
 $routes->post('/profile', 'Home::profile');
 
-$routes->get('/user_dashboard', 'DashboardController::user_dashboard');
-$routes->get('/admin_dashboard', 'AdminDashboardController::index');
+$routes->get('/user_dashboard', 'DashboardController::user_dashboard', ['filter' => 'isLogin']);
+
+$routes->get('/admin_dashboard', 'AdminDashboardController::index', ['filter' => 'isAdmin']);
 
 $routes->get('/users', 'AdminDashboardController::users');
 
