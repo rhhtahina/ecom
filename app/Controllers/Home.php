@@ -81,7 +81,7 @@ class Home extends BaseController
                         $url = "user_dashboard";
                     } else if ($record['user_type'] == "admin") {
                         // go to admin page
-                        $url = "admin_dashboard";
+                        $url = "admin/admin_dashboard";
                     }
 
                     return redirect()->to(base_url($url));
